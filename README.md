@@ -34,6 +34,14 @@
    ```
    Each row in answers.sql_0_0_nl_0 table stores answer as pair of ids ("sql_id", "nl_id").
 
+### Word Embedding
+
+   You can download the word embedding by following codes
+   ```
+   wget http://clic.cimec.unitn.it/composes/materials/EN-wform.w.5.cbow.neg10.400.subsmpl.txt.gz
+   gunzip EN-wform.w.5.cbow.neg10.400.subsmpl.txt.gz
+   ```
+
 ## Extract Features
    
    You can extract features from SQL, NL pair by running the following code.
