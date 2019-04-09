@@ -2,19 +2,13 @@
 import psycopg2
 import pandas as pd
 import numpy as np
+import config
 
 def execute(query):
     pc.execute(query)
     return pc.fetchall()
 
-user = 'kjhong'
-password = 'kjhong'
-host_product = 'localhost'
-dbname = 'kjhong'
-port='5432'
-
-conn_string = "dbname={dbname} user={user} host={host} password={password} port={port}"\
-              .format(dbname=dbname, user=user, host=host_product, password=password, port=port)
+conn_string = config.conn_string
 
 try:
     conn = psycopg2.connect(conn_string)

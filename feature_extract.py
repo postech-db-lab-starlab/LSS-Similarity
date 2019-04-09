@@ -4,6 +4,7 @@ import nltk
 import time
 from nltk.corpus import stopwords
 import json
+import config
 
 def makeDictionary(fname):
     dic = {}
@@ -107,8 +108,25 @@ def feature_vector(sqlContentVector, sentenceContentVector):
     else: return 0
   
 def getSqlNl():
-    unknown_nl = '(574912, 575237, 574928, 574741, 574614, 574876, 575015, 574760, 574892, 621490, 575279, 574002, 573363, 573880, 573371, 573884, 573888, 573378, 573893, 573382, 573386, 573648, 573905, 573650, 577620, 573910, 577623, 573914, 573918, 573392, 573922, 573667, 575204, 573926, 573670, 573930, 575089, 573904, 575225)'
-    sql_string = "Select sqi, sei, ui1, sqpos, sepos from (select sqi, sei, sqpos, sepos, ui1 from (select u.url_id as ui1, sq.id as sqi, se.position as sqpos from urls.experiment_tb_1 as u, sentences.naive_tb_0 as se, sqls.naive_tb_0_0 as sq where u.url_id = se.url_id and sq.sentence_id = se.id and sq.is_valid = true) as t, (select u1.url_id as ui2, se1.id as sei, se1.position as sepos from urls.experiment_tb_1 as u1, sentences.naive_tb_0 as se1 where u1.url_id = se1.url_id) as t1 where t.ui1 = t1.ui2 and sei not in (select sq12.sentence_id from sqls.naive_tb_0_0 as sq12 where sq12.is_valid = true) and sei not in " + unknown_nl  + " and sqi in (select sentence_id from sql_features.dls_cu_tb_0_0_0) and sei in (select sentence_id from nl_features.dls_cu_tb_0_0) order by sei, sqi) as ADF where ui1 in (select SEN.url_id from answers.sql_0_0_nl_0 as ANS join sentences.naive_tb_0 as SEN on ANS.sentence_id = SEN.id);"
+    unknown_nl = '()' # Append nl_id to exclude specific natural language setences.
+    sql_string = "Select sqi, sei, ui1, sqpos, sepos from " \
+                    "(select sqi, sei, sqpos, sepos, ui1 from " \
+                        "(select u.url_id as ui1, sq.id as sqi, se.position as sqpos from " \
+                            "urls.experiment_tb_1 as u, " \
+                            "sentences.naive_tb_0 as se, " \
+                            "sqls.naive_tb_0_0 as sq " \
+                        "where u.url_id = se.url_id and sq.sentence_id = se.id and sq.is_valid = true) as t, " \
+                        "(select u1.url_id as ui2, se1.id as sei, se1.position as sepos from " \
+                            "urls.experiment_tb_1 as u1, " \
+                            "sentences.naive_tb_0 as se1 where u1.url_id = se1.url_id) as t1 " \
+                    "where t.ui1 = t1.ui2 " \
+                        "and sei not in " \
+                            "(select sq12.sentence_id from sqls.naive_tb_0_0 as sq12 where sq12.is_valid = true) " \
+                        "and sei not in " + unknown_nl  + " " \
+                        "and sqi in (select sentence_id from sql_features.dls_cu_tb_0_0_0) " \
+                        "and sei in (select sentence_id from nl_features.dls_cu_tb_0_0) order by sei, sqi) as ADF " \
+                "where ui1 in " \
+                    "(select SEN.url_id from answers.sql_0_0_nl_0 as ANS join sentences.naive_tb_0 as SEN on ANS.sentence_id = SEN.id);"
     curs.execute(sql_string)
     return curs.fetchall()
 
@@ -117,7 +135,7 @@ if __name__ == "__main__":
     stopwords = set(stopwords.words('english'))
     stopwords = stopwords - set(['not', 'less', 'under', 'over', 'where', 'above', 'what', 'who', 'or', 'from', 'more', 'and', 'below', 'most', 'which', '\'t'])
     
-    conn_string = "host='localhost' dbname='kjhong' user='kjhong' password='kjhong'"
+    conn_string = config.conn_string
     conn = psycopg2.connect(conn_string)
     curs = conn.cursor()
     

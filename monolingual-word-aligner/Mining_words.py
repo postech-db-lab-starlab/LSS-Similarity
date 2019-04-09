@@ -7,6 +7,7 @@ import time
 sys.path.append('/usr/local/python2.7/dist-packages/psycopg2')
 
 import psycopg2
+import config
 
 ##############################################################################################################################
 def align(sentence1, cnlp):
@@ -50,7 +51,7 @@ def align(sentence1, cnlp):
       print (text)
 ##############################################################################################################################
 
-conn_string = "host='localhost' dbname='kjhong' user='kjhong' password='kjhong'"
+conn_string = config.conn_string
 conn = psycopg2.connect(conn_string)
 curs = conn.cursor()
 
@@ -74,38 +75,51 @@ def get_sentences(url_id):
   curs.execute(sql_string)
   return curs.fetchall()
 
-port = int(sys.argv[1])
-n = int(sys.argv[1]) % 20
+def print_mining(mode):
+  total_time = 0
+  total_num = 0
+
+  if mode == "sql":
+    sentences = get_sqls()
+  elif mode == "nl":
+    sentences = get_sentencess()
+  else:
+    raise Exception("Set mode as 'sql' or 'nl'")
+
+  num = len(sentences) / 16
+  if n < 15: sentences = sentences[n * num : n*num + num]
+  else: sentences = sentences[15 * num : ]
+
+  print n * num, n * num + num
+
+  for (sentence_id, is_select, sentence) in sentences:
+    start_time = time.time()
+    if len(sentence.split()) == 0:
+      continue
+    print '<sentence_id>:' + str(sentence_id)
+    print '<sentence>:' + str(sentence)
+    sentence = re.sub('[Ss][Ee][Ll][Ee][Cc][Tt][ ]+\*', 'select all', sentence)  
+    if is_select: sentence = re.sub('\*,', 'all,', sentence)
+    for word in re.findall('[A-Za-z0-9]*[A-Za-z][A-Za-z0-9]*\.[A-Za-z0-9]*[A-Za-z][A-Za-z0-9]*', sentence):
+      sentence = sentence.replace(word, word.replace('.', ' '))
+    print '<changed sentence>:' + str(sentence)
+    try:
+      align(sentence, cnlp)
+    except: 
+      print 'error'
+    end_time = time.time()
+    print '<time>:' + str(end_time - start_time)
+    total_time += end_time - start_time
+    total_num += 1
+  print '<total_time>:' + str(total_time)
+  print '<total_num>:' + str(total_num)
+
+n = int(sys.argv[1])
+port = 18080 + n
 cnlp = StanfordNLP(port)
 
-total_time = 0
-total_num = 0
-sentences = get_sqls()
-#sentences = get_sentencess()
-num = len(sentences) / 16
-if n < 15: sentences = sentences[n * num : n*num + num]
-else: sentences = sentences[15 * num : ]
+sys.stdout = open("Mined_words/Mined_words.sql_" + str(n) + ".txt", "w")
+print_mining('sql')
 
-print n * num, n * num + num
-
-for (sentence_id, is_select, sentence) in sentences:
-  start_time = time.time()
-  if len(sentence.split()) == 0:
-    continue
-  print '<sentence_id>:' + str(sentence_id)
-  print '<sentence>:' + str(sentence)
-  sentence = re.sub('[Ss][Ee][Ll][Ee][Cc][Tt][ ]+\*', 'select all', sentence)  
-  if is_select: sentence = re.sub('\*,', 'all,', sentence)
-  for word in re.findall('[A-Za-z0-9]*[A-Za-z][A-Za-z0-9]*\.[A-Za-z0-9]*[A-Za-z][A-Za-z0-9]*', sentence):
-    sentence = sentence.replace(word, word.replace('.', ' '))
-  print '<changed sentence>:' + str(sentence)
-  try:
-    align(sentence, cnlp)
-  except: 
-    print 'error'
-  end_time = time.time()
-  print '<time>:' + str(end_time - start_time)
-  total_time += end_time - start_time
-  total_num += 1
-print '<total_time>:' + str(total_time)
-print '<total_num>:' + str(total_num)
+sys.stdout = open("Mined_words/Mined_words.nl_" + str(n) + ".txt", "w")
+print_mining('nl')

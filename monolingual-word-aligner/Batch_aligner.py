@@ -3,6 +3,7 @@ sys.path.append('/usr/local/python2.7/dist-packages/psycopg2')
 import psycopg2
 import aligner_modified
 import time
+import config
 
 def getLemmasAndPosTagsData(sentence_id):
   sql_string = "select start_offset, end_offset, index, word, lemma, postag from nl_features.dls_cu_tb_0_0 "
@@ -134,12 +135,14 @@ def get_url_id(sentence_id):
   curs.execute(sql_string)
   return curs.fetchall()
 
-conn_string = "host='localhost' dbname='kjhong' user='kjhong' password='kjhong'"
+conn_string = config.conn_string
 conn = psycopg2.connect(conn_string)
 curs = conn.cursor()
 
-
-fname = sys.argv[2]
+if len(sys.argv) > 2:
+  fname = sys.argv[2]
+else:
+  fname = "sentence_ids.txt"
 f = open(fname, "r")
 url_ids = set([])
 while True:
@@ -153,9 +156,9 @@ for url_id in url_ids:
   sqlnls += getSqlNl_id(url_id)
 
 #sqlnls = getSqlNl()
-num = len(sqlnls) / 48
+num = len(sqlnls) / 16
 n = int(sys.argv[1])
-if n < 47: sqlnls = sqlnls[n*num : n*num + num]
+if n < 15: sqlnls = sqlnls[n*num : n*num + num]
 else: sqlnls = sqlnls[n*num : ]
 
 (csql_id, csql_okay) = (-1, False)
@@ -190,6 +193,8 @@ for (sql_id, nl_id) in sqlnls:
     print 'align', time.time() - stime
     text = ''
     for (lid, rid) in results:
+      insert_query = "insert into alignments.dls_cu (sql_id, sql_idx, sentence_id, sentence_idx) values (" + str(sql_id) + ", " + str(rid) + ", " + str(nl_id) + ", " + str(lid) + ");"
+      curs.execute(insert_query)
       text += str(lid) + ',' + str(rid) + '\t'
     print (text)
   else:
