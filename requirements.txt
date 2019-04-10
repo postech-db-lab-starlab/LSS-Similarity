@@ -1,0 +1,9 @@
+jsonrpclib==0.1.7
+nltk==3.4
+numpy==1.16.2
+pandas==0.24.2
+pexpect==4.7.0
+psycopg2==2.8.1
+simplejson==3.16.0
+scikit_learn==0.20.3
+xgboost==0.82
