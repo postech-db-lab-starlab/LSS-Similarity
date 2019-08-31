@@ -33,7 +33,7 @@ class NeuralClassifier(nn.Module):
             self.optimizer.zero_grad()
 
             outputs = self.network(x)
-            loss = self.criterion(outputs, targets)
+            loss = self.criterion(outputs, targets.view(-1, 1))
             loss.backward()
             self.optimizer.step()
 

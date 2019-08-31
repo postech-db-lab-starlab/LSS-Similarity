@@ -3,7 +3,7 @@
     "model_type": "neural",
     "pretrained_model": "",
     "model":{
-        "num_epoch": 100,
+        "num_epoch": 5000,
         "lr": 1e-3
         }
 }
