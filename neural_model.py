@@ -22,8 +22,8 @@ class NeuralClassifier(nn.Module):
         result = self.network(x)
         return result
 
-    def train(self, x, targets):
-        if not isinstance(x, torch.Tensor):
+    def trainer(self, x, targets):
+        if not isinstance(x, type(torch.Tensor)):
             x = torch.Tensor(x)
         if not isinstance(targets, torch.Tensor):
             targets = torch.Tensor(targets)
@@ -35,18 +35,18 @@ class NeuralClassifier(nn.Module):
             outputs = self.network(x)
             loss = self.criterion(outputs, targets)
             loss.backward()
-            self.optimizer.backward()
+            self.optimizer.step()
 
-    def predict(self, x):
+    def predictor(self, x):
         if not isinstance(x, torch.Tensor):
             x = torch.Tensor(x)
 
-        return self(x).view(-1).detach().cpu().nunpy()
+        return self(x).view(-1).detach().cpu().numpy()
 
 
 class NeuralModel(nn.Module):
     def __init__(self, input_dim, hidden_dim, target_size):
-        super(NeuralClassifier, self).__init__()
+        super(NeuralModel, self).__init__()
 
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
@@ -56,8 +56,9 @@ class NeuralModel(nn.Module):
             nn.Linear(input_dim, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU()
-            nn.Linear(hidden_dim, target_size)
+            nn.ReLU(),
+            nn.Linear(hidden_dim, target_size),
+            nn.Sigmoid()
         )
 
     def forward(self, x):

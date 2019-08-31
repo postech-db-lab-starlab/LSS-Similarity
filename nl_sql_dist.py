@@ -47,9 +47,9 @@ def run_neural_model(model_params, train_feature, train_label, test_feature, pre
         model = torch.load(pretrained_model)
     else:
         model = NeuralClassifier(**model_params)
-        model.train(train_feature, train_label)
+        model.trainer(train_feature, train_label)
 
-    y_pred = model.predict(test_feature)
+    y_pred = model.predictor(test_feature)
     predictions = [round(value) for value in y_pred]
 
     return predictions
