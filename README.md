@@ -68,9 +68,11 @@
 
 ### Test
 
+   Firstly, you should update the ```params.json``` file to direct pretrained model file
+
    You can load the existing model by running the following code
    ```
-   python xgb_dist.py <PATH_TO_SAVED_MODEL>
+   python nl_sql_dist.py --model xgb
    ```
    We provide the pre-trained model for test, named ```XGB_TEST1.dat```.
 
