@@ -2,6 +2,7 @@
     "test_ratio": 0.2,
     "model_type": "neural",
     "pretrained_model": "",
+    "save_model": false,
     "model":{
         "num_epoch": 5000,
         "lr": 1e-3

@@ -2,6 +2,7 @@
     "test_ratio": 0.2,
     "model_type": "xgb",
     "pretrained_model": "",
+    "save_model": false,
     "model":{
         "objective": "binary:logistic",
         "eval_metric" : "auc",

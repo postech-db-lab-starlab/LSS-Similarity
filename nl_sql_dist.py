@@ -28,31 +28,24 @@ def measure_only_true(true_label, pred, indent):
     print("=============================")
 
 
-def run_xgb_model(model_params, train_feature, train_label, test_feature, pretrained_model=''):
+def run_xgb_model(model_params, train_feature, train_label, test_feature, save_model=False, pretrained_model=''):
     if pretrained_model != '':
         model = pickle.load(open(pretrained_model, 'rb'))
     else:
         model = XGBClassifier(**model_params)
         model.fit(train_feature, train_label)
 
-    # Make prediction
-    y_pred = model.predict(test_feature)
-    predictions = [round(value) for value in y_pred]
-
-    return predictions
+    return model
 
 
-def run_neural_model(model_params, train_feature, train_label, test_feature, pretrained_model=''):
+def run_neural_model(model_params, train_feature, train_label, test_feature, save_model=False, pretrained_model=''):
     if pretrained_model != '':
         model = torch.load(pretrained_model)
     else:
         model = NeuralClassifier(**model_params)
         model.trainer(train_feature, train_label)
 
-    y_pred = model.predictor(test_feature)
-    predictions = [round(value) for value in y_pred]
-
-    return predictions
+    return model
 
 
 def main(args):
@@ -74,11 +67,26 @@ def main(args):
     test_feature = test_feature[:, 2:5]
 
     if params['model_type'] == 'xgb':
-        predictions = run_xgb_model(model_params, train_feature, train_label, test_feature, params['pretrained_model'])
+        model = run_xgb_model(model_params,
+                              train_feature, train_label, test_feature,
+                              params['pretrained_model'])
+        if params['save_model']:
+            pickle.dump(model, open('XGB_MODEL.dat', "wb"))
     elif params['model_type'] == 'neural':
-        predictions = run_neural_model(model_params, train_feature, train_label, test_feature, params['pretrained_model'])
+        model = run_neural_model(model_params,
+                                 train_feature, train_label, test_feature,
+                                 params['pretrained_model'])
+        if params['save_model']:
+            torch.save(model.state_dict, 'NEURAL_MODEL.dat')
     else:
         raise Exception("Model should be 'xgb' or 'neural'")
+
+    
+
+
+    # Make prediction
+    y_pred = model.predict(test_feature)
+    predictions = [round(value) for value in y_pred]
 
     accuracy = accuracy_score(test_label, predictions)
     print("Accuracy: %.2f%%" % (accuracy * 100))
