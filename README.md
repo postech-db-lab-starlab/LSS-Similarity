@@ -63,7 +63,7 @@
 
    You can train the model and test the code by running the code below
    ```
-   python xgb_dist.py
+   python nl_sql_dist.py --model xgb
    ```
 
 ### Test

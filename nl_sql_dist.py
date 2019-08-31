@@ -45,7 +45,7 @@ def main(args):
         model = pickle.load(open(model_path, 'rb'))
         test_ratio = 1
     else:
-        model = XGBClassifier()
+        model = XGBClassifier(*model_params)
 
     train_feature, test_feature, train_label, test_label = train_test_split(features, labels, test_size=test_ratio, random_state=7)
 
