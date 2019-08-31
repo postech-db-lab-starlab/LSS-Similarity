@@ -41,7 +41,7 @@ class NeuralClassifier(nn.Module):
         if not isinstance(x, torch.Tensor):
             x = torch.Tensor(x)
 
-        return self(x).detach().cpu().nunpy()
+        return self(x).view(-1).detach().cpu().nunpy()
 
 
 class NeuralModel(nn.Module):

@@ -1,8 +1,8 @@
 {
     "test_ratio": 0.2,
-    "num_round": 100,
+    "model_type": "xgb",
+    "pretrained_model": "",
     "model":{
-        "type": "xgb",
         "objective": "binary:logistic",
         "eval_metric" : "auc",
         "learning_rate" : 0.1,
@@ -12,7 +12,6 @@
         "colsample_bytree": 1,
         "gamma" : 0,
         "reg_alpha": 0,
-        "reg_lambda": 1,
-        "pretrained_model": ""
+        "reg_lambda": 1
         }
 }

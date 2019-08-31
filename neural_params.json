@@ -1,0 +1,9 @@
+{
+    "test_ratio": 0.2,
+    "model_type": "neural",
+    "pretrained_model": "",
+    "model":{
+        "num_epoch": 100,
+        "lr": 1e-3
+        }
+}

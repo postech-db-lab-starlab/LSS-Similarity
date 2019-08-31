@@ -28,10 +28,9 @@ def measure_only_true(true_label, pred, indent):
     print("=============================")
 
 
-def run_xgb_model(model_params, train_feature, train_label, test_feature):
-    if model_params['pretrained_model'] != '':
-        model_path = model_params['pretrained_model']
-        model = pickle.load(open(model_path, 'rb'))
+def run_xgb_model(model_params, train_feature, train_label, test_feature, pretrained_model=''):
+    if pretrained_model != '':
+        model = pickle.load(open(pretrained_model, 'rb'))
     else:
         model = XGBClassifier(**model_params)
         model.fit(train_feature, train_label)
@@ -43,12 +42,11 @@ def run_xgb_model(model_params, train_feature, train_label, test_feature):
     return predictions
 
 
-def run_neural_model(model_params, train_feature, train_label, test_feature):
-    if model_params['pretrained_model'] != '':
-        model_path = model_params['pretrained_model']
-        model = torch.load(model_path)
+def run_neural_model(model_params, train_feature, train_label, test_feature, pretrained_model=''):
+    if pretrained_model != '':
+        model = torch.load(pretrained_model)
     else:
-        model = NeuralClassifier()
+        model = NeuralClassifier(**model_params)
         model.train(train_feature, train_label)
 
     y_pred = model.predict(test_feature)
@@ -63,9 +61,8 @@ def main(args):
     params = json.load(open(args.P))
 
     # Parameters
-    num_round = params['num_round']
     model_params = params['model']
-    test_ratio = 1 if model_params['pretrained_model'] != '' else params['test_ratio']
+    test_ratio = 1 if params['pretrained_model'] != '' else params['test_ratio']
 
     features = feats[:, :5]
     labels = feats[:, 5]
@@ -76,10 +73,12 @@ def main(args):
     train_feature = train_feature[:, 2:5]
     test_feature = test_feature[:, 2:5]
 
-    if model_params['type'] == 'xgb':
-        predictions = run_xgb_model(model_params, train_feature, train_label, test_feature)
-    elif model_params['type'] == 'neural':
-        predictions = run_neural_model(model_params, train_feature, train_label, test_feature)
+    if params['model_type'] == 'xgb':
+        predictions = run_xgb_model(model_params, train_feature, train_label, test_feature, params['pretrained_model'])
+    elif params['model_type'] == 'neural':
+        predictions = run_neural_model(model_params, train_feature, train_label, test_feature, params['pretrained_model'])
+    else:
+        raise Exception("Model should be 'xgb' or 'neural'")
 
     accuracy = accuracy_score(test_label, predictions)
     print("Accuracy: %.2f%%" % (accuracy * 100))
