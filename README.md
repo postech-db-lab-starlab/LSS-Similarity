@@ -105,7 +105,7 @@
 
    You can load the existing model by running the following code:
    ```
-   python nl_sql_dist.py --parameters xgb_params.json
+   python nl_sql_dist.py --parameters <PARAMETER_FILE_PATH>
    ```
    We provide the pre-trained model for test, named ```XGB_TEST1.dat```.
 

@@ -37,6 +37,8 @@ class NeuralClassifier(nn.Module):
             loss.backward()
             self.optimizer.step()
 
+        # (TODO) Validate the model and save the best model for later
+
     def predict(self, x):
         if not isinstance(x, torch.Tensor):
             x = torch.Tensor(x)
