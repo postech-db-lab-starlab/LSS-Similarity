@@ -71,8 +71,9 @@ if __name__ == "__main__":
     parser.add_argument('--parameters', required=False, dest='P',
                         help='Path to parameter file. Defualt: "./params.json"',
                         default='params.json')
-    parser.add_argument('--model', required=True, dest='M',
-                        help='Model type to use (xgb/neural)')
+    parser.add_argument('--model', required=False, dest='M',
+                        help='Model type to use (xgb/neural)',
+                        default='xgb')
 
     args = parser.parse_args()
     main(args)
