@@ -61,9 +61,11 @@
 
 ### Train
 
-   You can train the model and test the code by running the code below
+   Set up all the parameters in ```xgb_params.json``` file or ```neural_params.json``` file.
+
+   You can train the model and test the code by running the code below:
    ```
-   python nl_sql_dist.py --model xgb
+   python nl_sql_dist.py --parameters xgb_params.json
    ```
 
    With provided sample features, you would get some text as follows:
@@ -81,11 +83,11 @@
 
 ### Test
 
-   Firstly, you should update the ```params.json``` file to direct pretrained model file
+   Firstly, you should update the ```xgb_params.json``` file or ```neural_params.json``` to direct pretrained model file.
 
-   You can load the existing model by running the following code
+   You can load the existing model by running the following code:
    ```
-   python nl_sql_dist.py --model xgb
+   python nl_sql_dist.py --parameters xgb_params.json
    ```
    We provide the pre-trained model for test, named ```XGB_TEST1.dat```.
 
