@@ -26,6 +26,28 @@ def measure_only_true(true_label, pred, indent):
     print("=============================")
 
 
+def run_xgb_model(train_feature, train_label, test_feature):
+    if model_params['pretrained_model'] != '':
+        model_path = model_params['pretrained_model']
+        model = pickle.load(open(model_path, 'rb'))
+        test_ratio = 1
+    else:
+        model = XGBClassifier(**model_params)
+
+    model.fit(train_feature, train_label)
+
+    # Make prediction
+    test_pred = test_feature[:, 2:5]
+    y_pred = model.predict(test_pred)
+    predictions = [round(value) for value in y_pred]
+
+    return predictions
+
+
+def run_neural_model(train_feature, train_label, test_feature):
+    pass
+
+
 def main(args):
     # Load feature_label data made by save_feature.py
     feats = np.loadtxt(args.F)
@@ -39,23 +61,15 @@ def main(args):
     features = feats[:, :5]
     labels = feats[:, 5]
 
-    if model_params['pretrained_model'] != '':
-        model_path = model_params['pretrained_model']
-        model = pickle.load(open(model_path, 'rb'))
-        test_ratio = 1
-    else:
-        model = XGBClassifier(**model_params)
-
     train_feature, test_feature, train_label, test_label = train_test_split(features, labels, test_size=test_ratio, random_state=7)
 
-    # Train the model
+    # Remove SQL id and NL id
     train_feature = train_feature[:, 2:5]
-    model.fit(train_feature, train_label)
 
-    # Make prediction
-    test_pred = test_feature[:, 2:5]
-    y_pred = model.predict(test_pred)
-    predictions = [round(value) for value in y_pred]
+    if model_params['type'] == 'xgb':
+        predictions = run_xgb_model(train_feature, train_label, test_feature)
+    elif model_params['type'] == 'neural':
+        predictions = run_neural_model(train_feature, train_label, test_feature)
 
     accuracy = accuracy_score(test_label, predictions)
     print("Accuracy: %.2f%%" % (accuracy * 100))
@@ -71,9 +85,6 @@ if __name__ == "__main__":
     parser.add_argument('--parameters', required=False, dest='P',
                         help='Path to parameter file. Defualt: "./params.json"',
                         default='params.json')
-    parser.add_argument('--model', required=False, dest='M',
-                        help='Model type to use (xgb/neural)',
-                        default='xgb')
 
     args = parser.parse_args()
     main(args)
