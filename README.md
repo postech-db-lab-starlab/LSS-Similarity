@@ -66,6 +66,19 @@
    python nl_sql_dist.py --model xgb
    ```
 
+   With provided sample features, you would get some text as follows:
+   ```
+   Accuracy: 92.78%
+   True Positive: 42
+   False Positive: 4
+   False Negative: 3
+   True Negative: 48
+   -----------------------------
+   Precision: 0.91
+   Recall: 0.93
+   =============================
+   ```
+
 ### Test
 
    Firstly, you should update the ```params.json``` file to direct pretrained model file
