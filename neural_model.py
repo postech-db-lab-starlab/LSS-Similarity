@@ -23,6 +23,11 @@ class NeuralClassifier(nn.Module):
         return result
 
     def train(self, x, targets):
+        if not isinstance(x, torch.Tensor):
+            x = torch.Tensor(x)
+        if not isinstance(targets, torch.Tensor):
+            targets = torch.Tensor(targets)
+
         self.train()
         for epoch in range(self.num_epoch):
             self.optimizer.zero_grad()
@@ -31,6 +36,12 @@ class NeuralClassifier(nn.Module):
             loss = self.criterion(outputs, targets)
             loss.backward()
             self.optimizer.backward()
+
+    def predict(self, x):
+        if not isinstance(x, torch.Tensor):
+            x = torch.Tensor(x)
+
+        return self(x).detach().cpu().nunpy()
 
 
 class NeuralModel(nn.Module):
