@@ -68,7 +68,7 @@
    python nl_sql_dist.py --parameters xgb_params.json
    ```
 
-   With provided sample features, you would get some text as follows:
+   With provided sample features, you would get results as follows:
    ```
    Accuracy: 92.78%
    True Positive: 42
@@ -78,6 +78,24 @@
    -----------------------------
    Precision: 0.91
    Recall: 0.93
+   =============================
+   ```
+
+   To train the neural network model, use the following code:
+   ```
+   python nl_sql_dist.py --parameters neural_params.json
+   ```
+
+   With proided sample features, you would get results as follows:
+   ```
+   Accuracy: 94.85%
+   True Positive: 43
+   False Positive: 3
+   False Negative: 2
+   True Negative: 49
+   -----------------------------
+   Precision: 0.93
+   Recall: 0.96
    =============================
    ```
 
