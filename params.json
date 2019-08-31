@@ -1,0 +1,16 @@
+{
+    "test_ratio": 0.2,
+    "num_round": 100,
+    "model":{
+        "objective": "binary:logistic",
+        "eval_metric" : "auc",
+        "learning_rate" : 0.1,
+        "max_depth": 1,
+        "min_child_weight": 1,
+        "subsample": 1,
+        "colsample_bytree": 1,
+        "gamma" : 0,
+        "reg_alpha": 0,
+        "reg_lambda": 1
+        }
+}
