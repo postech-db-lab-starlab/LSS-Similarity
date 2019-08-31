@@ -93,8 +93,8 @@ if __name__ == "__main__":
                         help='Path to final feature file. Defualt: "./feature_answer_all.txt"',
                         default='feature_answer_all.txt')
     parser.add_argument('--parameters', required=False, dest='P',
-                        help='Path to parameter file. Defualt: "./params.json"',
-                        default='params.json')
+                        help='Path to parameter file. Defualt: "./xgb_params.json"',
+                        default='xgb_params.json')
 
     args = parser.parse_args()
     main(args)
