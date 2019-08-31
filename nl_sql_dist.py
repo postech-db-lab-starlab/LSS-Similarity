@@ -1,4 +1,6 @@
 from xgboost import XGBClassifier
+from neural_model import NeuralClassifier
+
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score
@@ -26,26 +28,33 @@ def measure_only_true(true_label, pred, indent):
     print("=============================")
 
 
-def run_xgb_model(train_feature, train_label, test_feature):
+def run_xgb_model(model_params, train_feature, train_label, test_feature):
     if model_params['pretrained_model'] != '':
         model_path = model_params['pretrained_model']
         model = pickle.load(open(model_path, 'rb'))
-        test_ratio = 1
     else:
         model = XGBClassifier(**model_params)
-
-    model.fit(train_feature, train_label)
+        model.fit(train_feature, train_label)
 
     # Make prediction
-    test_pred = test_feature[:, 2:5]
-    y_pred = model.predict(test_pred)
+    y_pred = model.predict(test_feature)
     predictions = [round(value) for value in y_pred]
 
     return predictions
 
 
-def run_neural_model(train_feature, train_label, test_feature):
-    pass
+def run_neural_model(model_params, train_feature, train_label, test_feature):
+    if model_params['pretrained_model'] != '':
+        model_path = model_params['pretrained_model']
+        model = torch.load(model_path)
+    else:
+        model = NeuralClassifier()
+        model.train(train_feature, train_label)
+
+    y_pred = model.predict(test_feature)
+    predictions = [round(value) for value in y_pred]
+
+    return predictions
 
 
 def main(args):
@@ -54,9 +63,9 @@ def main(args):
     params = json.load(open(args.P))
 
     # Parameters
-    test_ratio = params['test_ratio']
     num_round = params['num_round']
     model_params = params['model']
+    test_ratio = 1 if model_params['pretrained_model'] != '' else params['test_ratio']
 
     features = feats[:, :5]
     labels = feats[:, 5]
@@ -65,11 +74,12 @@ def main(args):
 
     # Remove SQL id and NL id
     train_feature = train_feature[:, 2:5]
+    test_feature = test_feature[:, 2:5]
 
     if model_params['type'] == 'xgb':
-        predictions = run_xgb_model(train_feature, train_label, test_feature)
+        predictions = run_xgb_model(model_params, train_feature, train_label, test_feature)
     elif model_params['type'] == 'neural':
-        predictions = run_neural_model(train_feature, train_label, test_feature)
+        predictions = run_neural_model(model_params, train_feature, train_label, test_feature)
 
     accuracy = accuracy_score(test_label, predictions)
     print("Accuracy: %.2f%%" % (accuracy * 100))
