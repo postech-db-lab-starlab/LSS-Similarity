@@ -81,9 +81,6 @@ def main(args):
     else:
         raise Exception("Model should be 'xgb' or 'neural'")
 
-    
-
-
     # Make prediction
     y_pred = model.predict(test_feature)
     predictions = [round(value) for value in y_pred]
