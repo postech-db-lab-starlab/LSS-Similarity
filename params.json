@@ -11,6 +11,7 @@
         "colsample_bytree": 1,
         "gamma" : 0,
         "reg_alpha": 0,
-        "reg_lambda": 1
+        "reg_lambda": 1,
+        "pretrained_model": ""
         }
 }

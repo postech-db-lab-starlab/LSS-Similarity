@@ -29,7 +29,7 @@ def measure_only_true(true_label, pred, indent):
 def main(args):
     # Load feature_label data made by save_feature.py
     feats = np.loadtxt(args.F)
-    params = json.load(args.P)
+    params = json.load(open(args.P))
 
     # Parameters
     test_ratio = params['test_ratio']
@@ -39,13 +39,12 @@ def main(args):
     features = feats[:, :5]
     labels = feats[:, 5]
 
-
-    if len(sys.argv) > 1:
-        model_path = sys.argv[1]
+    if model_params['pretrained_model'] != '':
+        model_path = model_params['pretrained_model']
         model = pickle.load(open(model_path, 'rb'))
         test_ratio = 1
     else:
-        model = XGBClassifier(*model_params)
+        model = XGBClassifier(**model_params)
 
     train_feature, test_feature, train_label, test_label = train_test_split(features, labels, test_size=test_ratio, random_state=7)
 
