@@ -36,11 +36,13 @@
 
 ### Word Embedding
 
-   You can download the word embedding by following codes
+   You can download the word embedding by following codes:
    ```
    wget http://clic.cimec.unitn.it/composes/materials/EN-wform.w.5.cbow.neg10.400.subsmpl.txt.gz
    gunzip EN-wform.w.5.cbow.neg10.400.subsmpl.txt.gz
    ```
+   
+   Move ```EN-wform.w.5.cbow.neg10.400.subsmpl.txt``` to ```data``` directory.
 
 ## Extract Features
    
@@ -48,20 +50,20 @@
    ```
    python feature_extract.py
    ```
-   Features are stored in file ```features.txt``` in form ```(<sql_id> <nl_id> <feat0> <feat1> <feat2>)```
+   Features are stored in file ```data/features.txt``` in form ```(<sql_id> <nl_id> <feat0> <feat1> <feat2>)```
 
    Run the following code to re-format the file for XGBoost Model.
    ```
    python modify_feature.py
    ```
 
-   All features and answers for each feature are stored in file ```feature_answer_all.txt``` in form ```(<sql_id> <nl_id> <feat0> <feat1> <feat2> <answer>)``` where ```<answer>``` is 1 or 0
+   All features and answers for each feature are stored in file ```data/feature_answer_all.txt``` in form ```(<sql_id> <nl_id> <feat0> <feat1> <feat2> <answer>)``` where ```<answer>``` is 1 or 0
 
 ## Run XGBoost Model
 
 ### Train
 
-   Set up all the parameters in ```xgb_params.json``` file or ```neural_params.json``` file.
+   Set up all the parameters in ```config/xgb_params.json``` file or ```config/neural_params.json``` file.
 
    You can train the model and test the code by running the code below:
    ```
@@ -101,12 +103,12 @@
 
 ### Test
 
-   Firstly, you should update the ```xgb_params.json``` file or ```neural_params.json``` to direct pretrained model file.
+   Firstly, you should update the ```config/xgb_params.json``` file or ```config/neural_params.json``` to direct pretrained model file.
 
    You can load the existing model by running the following code:
    ```
    python nl_sql_dist.py --parameters <PARAMETER_FILE_PATH>
    ```
-   We provide the pre-trained model for test, named ```XGB_TEST1.dat```.
+   We provide the pre-trained model for test, named ```data/saved_model/XGB_TEST1.dat```.
 
-   If you use the pre-trained model, the program will use all the data in ```feature_answer_all.txt``` as test data.
+   If you use the pre-trained model, the program will use all the data in ```data/feature_answer_all.txt``` as test data.
