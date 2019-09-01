@@ -8,6 +8,7 @@ import pickle
 class NeuralClassifier(nn.Module):
     def __init__(self,
                  num_epoch=100,
+                 hidden_dim=10,
                  lr=1e-3,
                  validation=True):
         super(NeuralClassifier, self).__init__()
@@ -15,7 +16,7 @@ class NeuralClassifier(nn.Module):
         self.num_epoch = num_epoch
         self.lr = lr
 
-        self.network = NeuralModel(3, 10, 1)
+        self.network = NeuralModel(3, hidden_dim, 1)
 
         self.criterion = nn.BCELoss()
         self.optimizer = optim.Adam(self.network.parameters(), lr=self.lr)
@@ -59,7 +60,6 @@ class NeuralClassifier(nn.Module):
 
         if self.validation:
             self.network = pickle.loads(self.best_model)
-        # (TODO) Validate the model and save the best model for later
 
     def predict(self, x):
         if not isinstance(x, torch.Tensor):

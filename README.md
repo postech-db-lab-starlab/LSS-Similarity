@@ -59,7 +59,7 @@
 
    All features and answers for each feature are stored in file ```data/feature_answer_all.txt``` in form ```(<sql_id> <nl_id> <feat0> <feat1> <feat2> <answer>)``` where ```<answer>``` is 1 or 0
 
-## Run XGBoost Model
+## Run XGBoost/Neural Network Model
 
 ### Train
 

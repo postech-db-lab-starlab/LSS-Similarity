@@ -5,6 +5,8 @@
     "save_model": false,
     "model":{
         "num_epoch": 5000,
-        "lr": 1e-3
+        "lr": 1e-3,
+        "hidden_dim": 10,
+        "validation": true
         }
 }
