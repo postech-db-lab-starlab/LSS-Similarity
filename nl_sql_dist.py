@@ -1,5 +1,5 @@
 from xgboost import XGBClassifier
-from neural_model import NeuralClassifier
+from model.neural_model import NeuralClassifier
 
 import numpy as np
 import pandas as pd
@@ -114,10 +114,10 @@ if __name__ == "__main__":
 
     parser.add_argument('--features', required=False, dest='F',
                         help='Path to final feature file. Defualt: "./feature_answer_all.txt"',
-                        default='feature_answer_all.txt')
+                        default='data/feature_answer_all.txt')
     parser.add_argument('--parameters', required=False, dest='P',
                         help='Path to parameter file. Defualt: "./xgb_params.json"',
-                        default='xgb_params.json')
+                        default='config/xgb_params.json')
 
     args = parser.parse_args()
     main(args)
