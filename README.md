@@ -41,7 +41,7 @@
    wget http://clic.cimec.unitn.it/composes/materials/EN-wform.w.5.cbow.neg10.400.subsmpl.txt.gz
    gunzip EN-wform.w.5.cbow.neg10.400.subsmpl.txt.gz
    ```
-   
+
    Move ```EN-wform.w.5.cbow.neg10.400.subsmpl.txt``` to ```data``` directory.
 
 ## Extract Features
@@ -82,6 +82,8 @@
    Recall: 0.93
    =============================
    ```
+   The ROC curve would be shown like this:
+   ![XGB Example Image](examples/xgb.png)
 
    To train the neural network model, use the following code:
    ```
@@ -100,6 +102,8 @@
    Recall: 0.96
    =============================
    ```
+   The ROC curve would be shown like this:
+   ![Neural Example Image](examples/neural.png)
 
 ### Test
 
