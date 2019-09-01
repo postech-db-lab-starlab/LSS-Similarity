@@ -4,7 +4,7 @@ import nltk
 import time
 from nltk.corpus import stopwords
 import json
-import config
+import config.config as config
 
 def makeDictionary(fname):
     dic = {}
@@ -141,15 +141,15 @@ if __name__ == "__main__":
     
     stime = time.time()
     vectorDict = {}
-    vectorDict = makeDictionary('EN-wform.w.5.cbow.neg10.400.subsmpl.txt')
+    vectorDict = makeDictionary('data/EN-wform.w.5.cbow.neg10.400.subsmpl.txt')
     
     sqlnls = getSqlNl()
     # num = len(sqlnls) / 48
     # if n < 47: sqlnls = sqlnls[n*num : n*num + num]
     # else: sqlnls = sqlnls[n*num : ]
 
-    writeFile = open("features.txt", "w")
-    content_file = open("contents.txt", "w")
+    writeFile = open("data/features.txt", "w")
+    content_file = open("data/contents.txt", "w")
 
     csql_id = -1
     csentence_id = -1

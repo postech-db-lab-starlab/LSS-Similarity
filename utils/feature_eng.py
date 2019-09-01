@@ -1,7 +1,7 @@
 import random
 
-new_f = open('new_faa.txt', 'w')
-f = open('feature_answer_all.txt')
+new_f = open('data/new_faa.txt', 'w')
+f = open('data/feature_answer_all.txt')
 
 n_t = 0
 n_f = 0

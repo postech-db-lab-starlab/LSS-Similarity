@@ -2,7 +2,7 @@
 import psycopg2
 import pandas as pd
 import numpy as np
-import config
+import config.config as config
 
 def execute(query):
     pc.execute(query)
@@ -20,7 +20,7 @@ curs = conn.cursor()
 # query = "SELECT * FROM answers.sql_0_0_nl_0;" 
 # print(pd.read_sql(query, conn))
 
-feats_raw = np.loadtxt("features.txt")
+feats_raw = np.loadtxt("data/features.txt")
 
 query = "SELECT * FROM answers.sql_0_0_nl_0;"
 answs_raw = pd.read_sql(query, conn)
@@ -60,4 +60,4 @@ for idx in range(0, feats_raw.shape[0]):
         feats = np.vstack([feats, row])
 
 print("True data: {}, False data: {}".format(true_num, false_num))
-np.savetxt("feature_answer_all.txt", feats)
+np.savetxt("data/feature_answer_all.txt", feats)

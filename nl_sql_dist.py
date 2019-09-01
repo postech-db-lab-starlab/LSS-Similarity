@@ -88,13 +88,13 @@ def main(args):
                               train_feature, train_label, test_feature,
                               params['pretrained_model'])
         if params['save_model']:
-            pickle.dump(model, open('XGB_MODEL.dat', "wb"))
+            pickle.dump(model, open('data/saved_model/XGB_MODEL.dat', "wb"))
     elif params['model_type'] == 'neural':
         model = run_neural_model(model_params,
                                  train_feature, train_label, test_feature,
                                  params['pretrained_model'])
         if params['save_model']:
-            torch.save(model.state_dict, 'NEURAL_MODEL.dat')
+            torch.save(model.state_dict, 'data/saved_model/NEURAL_MODEL.dat')
     else:
         raise Exception("Model should be 'xgb' or 'neural'")
 
