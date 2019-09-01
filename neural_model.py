@@ -1,13 +1,15 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-
 import numpy as np
+
+import pickle
 
 class NeuralClassifier(nn.Module):
     def __init__(self,
                  num_epoch=100,
-                 lr=1e-3):
+                 lr=1e-3,
+                 validation=True):
         super(NeuralClassifier, self).__init__()
 
         self.num_epoch = num_epoch
@@ -17,6 +19,9 @@ class NeuralClassifier(nn.Module):
 
         self.criterion = nn.BCELoss()
         self.optimizer = optim.Adam(self.network.parameters(), lr=self.lr)
+
+        self.best_model = None
+        self.validation = True
 
     def forward(self, x):
         result = self.network(x)
@@ -28,15 +33,32 @@ class NeuralClassifier(nn.Module):
         if not isinstance(targets, torch.Tensor):
             targets = torch.Tensor(targets)
 
+        train_len = int(len(x) * 0.8)
+        train_x = x[:train_len]
+        train_targets = targets[:train_len]
+        val_x = x[train_len:]
+        val_targets = targets[train_len:]
+
         self.train()
+        prev_loss = 1e10
         for epoch in range(self.num_epoch):
             self.optimizer.zero_grad()
 
-            outputs = self.network(x)
-            loss = self.criterion(outputs, targets.view(-1, 1))
+            outputs = self.network(train_x)
+            loss = self.criterion(outputs, train_targets.view(-1, 1))
             loss.backward()
             self.optimizer.step()
 
+            if self.validation:
+                val_outputs = self.network(val_x)
+                loss = self.criterion(val_outputs, val_targets.view(-1, 1))
+                loss = float(loss)
+                if loss < prev_loss:
+                    self.best_model = pickle.dumps(self.network)
+                    prev_loss = loss
+
+        if self.validation:
+            self.network = pickle.loads(self.best_model)
         # (TODO) Validate the model and save the best model for later
 
     def predict(self, x):
