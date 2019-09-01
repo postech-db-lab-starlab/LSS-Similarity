@@ -3,11 +3,12 @@ from neural_model import NeuralClassifier
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, roc_curve, auc
 from sklearn.model_selection import train_test_split
 import sys
 import pickle
 import json
+import matplotlib.pyplot as plt
 
 import argparse
 
@@ -46,6 +47,22 @@ def run_neural_model(model_params, train_feature, train_label, test_feature, sav
         model.trainer(train_feature, train_label)
 
     return model
+
+
+def draw_roc_curve(pred, target):
+    fpr, tpr, threshold = roc_curve(target, pred)
+    roc_auc = auc(fpr, tpr)
+    plt.figure()
+    plt.plot(fpr[2], tpr[2], color='darkorange',
+             lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic example')
+    plt.legend(loc="lower right")
+    plt.show()
 
 
 def main(args):
@@ -88,6 +105,8 @@ def main(args):
     accuracy = accuracy_score(test_label, predictions)
     print("Accuracy: %.2f%%" % (accuracy * 100))
     measure_only_true(test_label, predictions, 0)
+
+    draw_roc_curve(y_pred, test_label)
 
 
 if __name__ == "__main__":
