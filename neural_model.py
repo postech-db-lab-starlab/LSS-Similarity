@@ -77,6 +77,7 @@ class NeuralModel(nn.Module):
         self.target_size = target_size
 
         self.network = nn.Sequential(
+            nn.BatchNorm1d(input_dim),
             nn.Linear(input_dim, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, hidden_dim),
