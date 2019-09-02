@@ -25,6 +25,8 @@ class NeuralClassifier(nn.Module):
         elif objective == "classification":
             self.network = NeuralClassificationModel(3, hidden_dim, 2)
             self.criterion = nn.CrossEntropyLoss()
+        else:
+            raise Exception("Objective should be 'regression' or 'classification'")
         
         self.optimizer = optim.Adam(self.network.parameters(), lr=self.lr)
 
@@ -33,6 +35,8 @@ class NeuralClassifier(nn.Module):
 
     def forward(self, x):
         result = self.network(x)
+        if self.objective == 'classification':
+            result = result[:, 1]
         return result
 
     def trainer(self, x, targets):
@@ -40,6 +44,11 @@ class NeuralClassifier(nn.Module):
             x = torch.Tensor(x)
         if not isinstance(targets, torch.Tensor):
             targets = torch.Tensor(targets)
+        
+        if self.objective == 'classification':
+            targets = targets.long().view(-1)
+        elif self.objective == 'regression':
+            targets = targets.view(-1, 1)
 
         train_len = int(len(x) * 0.8)
         train_x = x[:train_len]
@@ -53,13 +62,13 @@ class NeuralClassifier(nn.Module):
             self.optimizer.zero_grad()
 
             outputs = self.network(train_x)
-            loss = self.criterion(outputs, train_targets.view(-1, 1))
+            loss = self.criterion(outputs, train_targets)
             loss.backward()
             self.optimizer.step()
 
             if self.validation:
                 val_outputs = self.network(val_x)
-                loss = self.criterion(val_outputs, val_targets.view(-1, 1))
+                loss = self.criterion(val_outputs, val_targets)
                 loss = float(loss)
                 if loss < prev_loss:
                     self.best_model = pickle.dumps(self.network)

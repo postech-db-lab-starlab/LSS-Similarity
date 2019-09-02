@@ -4,7 +4,7 @@
     "pretrained_model": "",
     "save_model": false,
     "model":{
-        "objective": "logistic",
+        "objective": "classification",
         "num_epoch": 5000,
         "lr": 1e-3,
         "hidden_dim": 10,
