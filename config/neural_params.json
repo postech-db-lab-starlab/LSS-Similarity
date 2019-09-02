@@ -4,8 +4,8 @@
     "pretrained_model": "",
     "save_model": false,
     "model":{
-        "objective": "classification",
-        "num_epoch": 5000,
+        "objective": "regression",
+        "num_epoch": 500,
         "lr": 1e-3,
         "hidden_dim": 10,
         "validation": true

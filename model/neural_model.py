@@ -50,11 +50,14 @@ class NeuralClassifier(nn.Module):
         elif self.objective == 'regression':
             targets = targets.view(-1, 1)
 
-        train_len = int(len(x) * 0.8)
-        train_x = x[:train_len]
-        train_targets = targets[:train_len]
-        val_x = x[train_len:]
-        val_targets = targets[train_len:]
+        if self.validation:
+            train_len = int(len(x) * 0.8)
+            train_x = x[:train_len]
+            train_targets = targets[:train_len]
+            val_x = x[train_len:]
+            val_targets = targets[train_len:]
+        else:
+            train_x, train_targets = x, targets
 
         self.train()
         prev_loss = 1e10

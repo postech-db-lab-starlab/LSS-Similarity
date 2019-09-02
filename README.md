@@ -61,6 +61,50 @@
 
 ## Run XGBoost/Neural Network Model
 
+### Configuration
+
+   To train/test the XGBoost/Neural Network Model, firstly, configuration file should be set.
+
+   For XGBoost model, set up the ```config/xgb_params.json``` file:
+   ```
+   {
+    "test_ratio": 0.2,                    # Ratio of Test data in whole dataset
+    "model_type": "xgb",                  # Type of model, (xgb/neural)
+    "pretrained_model": "",               # To use the pretrained model, insert path to the pretrained model
+    "save_model": false,                  # Save the final model for later use. (at data/saved_model)
+    "model":{                             # Model configs. Search xgboost.XGBoostClassifier for more information
+        "objective": "binary:logistic",   
+        "eval_metric" : "auc",            
+        "learning_rate" : 0.1,
+        "max_depth": 1,
+        "min_child_weight": 1,
+        "subsample": 1,
+        "colsample_bytree": 1,
+        "gamma" : 0,
+        "reg_alpha": 0,
+        "reg_lambda": 1
+        }
+   }
+   ```
+
+   For Neural network model, set up the ```config/neural_params.json``` file:
+   ```
+   {
+    "test_ratio": 0.2,                    # Ratio of Test data in whole dataset
+    "model_type": "neural",               # Type of model, (xgb/neural)
+    "pretrained_model": "",               # To use the pretrained model, insert path to the pretrained model
+    "save_model": false,                  # Save the final model for later use. (at data/saved_model)
+    "model":{                             # Model configs.
+        "objective": "regression",        # Type of neural network model, (regression/classification)
+        "num_epoch": 500,                 # Number of epoch to train
+        "lr": 1e-3,                       # Learning rate
+        "hidden_dim": 10,                 # Dimension of hidden vector
+        "validation": true                # Validate the model and find best model
+        }
+   }
+   ```
+
+
 ### Train
 
    Set up all the parameters in ```config/xgb_params.json``` file or ```config/neural_params.json``` file.
