@@ -77,11 +77,11 @@ def main(args):
     features = feats[:, :5]
     labels = feats[:, 5]
 
-    train_feature, test_feature, train_label, test_label = train_test_split(features, labels, test_size=test_ratio, random_state=7)
+    train_feature, test_feature_with_id, train_label, test_label = train_test_split(features, labels, test_size=test_ratio, random_state=7)
 
     # Remove SQL id and NL id
     train_feature = train_feature[:, 2:5]
-    test_feature = test_feature[:, 2:5]
+    test_feature = test_feature_with_id[:, 2:5]
 
     if params['model_type'] == 'xgb':
         model = run_xgb_model(model_params,
@@ -107,6 +107,10 @@ def main(args):
     measure_only_true(test_label, predictions, 0)
 
     draw_roc_curve(y_pred, test_label)
+
+    test_feature_ids = test_feature_with_id[:, :2]
+    test_feature_answer = np.concatenate([test_feature_with_id, np.array(predictions).reshape(-1, 1)], -1)
+    np.save('data/test_result.dat', test_feature_answer)
 
 
 if __name__ == "__main__":
