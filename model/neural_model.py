@@ -7,6 +7,7 @@ import pickle
 
 class NeuralClassifier(nn.Module):
     def __init__(self,
+                 objective="regression",
                  num_epoch=100,
                  hidden_dim=10,
                  lr=1e-3,
@@ -16,9 +17,15 @@ class NeuralClassifier(nn.Module):
         self.num_epoch = num_epoch
         self.lr = lr
 
-        self.network = NeuralModel(3, hidden_dim, 1)
+        self.objective = objective
 
-        self.criterion = nn.BCELoss()
+        if objective == "regression":
+            self.network = NeuralRegressionModel(3, hidden_dim, 1)
+            self.criterion = nn.BCELoss()
+        elif objective == "classification":
+            self.network = NeuralClassificationModel(3, hidden_dim, 2)
+            self.criterion = nn.CrossEntropyLoss()
+        
         self.optimizer = optim.Adam(self.network.parameters(), lr=self.lr)
 
         self.best_model = None
@@ -68,9 +75,9 @@ class NeuralClassifier(nn.Module):
         return self(x).view(-1).detach().cpu().numpy()
 
 
-class NeuralModel(nn.Module):
+class NeuralRegressionModel(nn.Module):
     def __init__(self, input_dim, hidden_dim, target_size):
-        super(NeuralModel, self).__init__()
+        super(NeuralRegressionModel, self).__init__()
 
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
@@ -84,6 +91,28 @@ class NeuralModel(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_dim, target_size),
             nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        return self.network(x)
+
+
+class NeuralClassificationModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, target_size):
+        super(NeuralClassificationModel, self).__init__()
+
+        self.input_dim = input_dim
+        self.hidden_dim = hidden_dim
+        self.target_size = target_size
+
+        self.network = nn.Sequential(
+            nn.BatchNorm1d(input_dim),
+            nn.Linear(input_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, target_size),
+            nn.Softmax(dim=-1)
         )
 
     def forward(self, x):
