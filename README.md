@@ -177,3 +177,8 @@
    We provide the pre-trained model for test, named ```data/saved_model/XGB_TEST1.dat```.
 
    If you use the pre-trained model, the program will use all the data in ```data/feature_answer_all.txt``` as test data.
+
+   You can get the test result with SQL/NL sentences by running the code below:
+   ```
+   python extract_result.py
+   ```
